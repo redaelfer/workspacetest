@@ -1,0 +1,63 @@
+import calculateDiscountQuote from '../services/discountQuoteService';
+
+type QueryValue = string | string[] | undefined;
+
+type DiscountQuoteRequest = {
+  query: {
+    amount?: QueryValue;
+    coupon?: QueryValue;
+  };
+};
+
+type DiscountQuoteResponse = {
+  statusCode: number;
+  end: (body: string) => void;
+};
+
+function firstQueryValue(value: QueryValue): string | undefined {
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+
+  return value;
+}
+
+function sendJson(
+  res: DiscountQuoteResponse,
+  statusCode: number,
+  body: Record<string, number | string | undefined>,
+): void {
+  res.statusCode = statusCode;
+  res.end(JSON.stringify(body));
+}
+
+function discountQuoteController(req: DiscountQuoteRequest, res: DiscountQuoteResponse): void {
+  const amountValue = firstQueryValue(req.query.amount);
+
+  if (amountValue === undefined || amountValue.trim() === '') {
+    sendJson(res, 400, { error: 'amount is required' });
+    return;
+  }
+
+  const amount = Number(amountValue);
+
+  if (!Number.isFinite(amount) || amount < 0) {
+    sendJson(res, 400, { error: 'amount must be a finite non-negative number' });
+    return;
+  }
+
+  const quote = calculateDiscountQuote(amount, firstQueryValue(req.query.coupon));
+
+  if (!quote.ok) {
+    sendJson(res, 400, { error: quote.error });
+    return;
+  }
+
+  sendJson(res, 200, {
+    total: quote.total,
+    discountPercent: quote.discountPercent,
+    coupon: quote.couponCode,
+  });
+}
+
+export default discountQuoteController;
