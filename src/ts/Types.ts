@@ -17,4 +17,4 @@ type SharedTypes = {
   DiscountQuoteResult: DiscountQuoteResult;
 };
 
-export default SharedTypes;
+export type { SharedTypes as default };
