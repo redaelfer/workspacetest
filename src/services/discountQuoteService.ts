@@ -1,4 +1,4 @@
-import type DiscountQuoteResult from '@/ts/DiscountQuoteResult';
+import type SharedTypes from '@/ts/Types';
 
 const trustedCoupons: Readonly<Record<string, number>> = Object.freeze({
   SUMMER10: 10,
@@ -12,8 +12,10 @@ function roundCurrency(value: number): number {
   return Math.round(value * currencyPrecision) / currencyPrecision;
 }
 
-function resolveCoupon(couponCode: string | undefined): DiscountQuoteResult {
-  if (!couponCode) {
+function resolveCoupon(couponCode: string | undefined): SharedTypes['DiscountQuoteResult'] {
+  const normalizedCouponCode = couponCode?.trim().toUpperCase();
+
+  if (!normalizedCouponCode) {
     return {
       ok: true,
       total: 0,
@@ -21,7 +23,6 @@ function resolveCoupon(couponCode: string | undefined): DiscountQuoteResult {
     };
   }
 
-  const normalizedCouponCode = couponCode.trim().toUpperCase();
   const discountPercent = trustedCoupons[normalizedCouponCode];
 
   if (discountPercent === undefined) {
@@ -46,7 +47,7 @@ function resolveCoupon(couponCode: string | undefined): DiscountQuoteResult {
   };
 }
 
-function calculateDiscountQuote(amount: number, couponCode?: string): DiscountQuoteResult {
+function calculateDiscountQuote(amount: number, couponCode?: string): SharedTypes['DiscountQuoteResult'] {
   if (!Number.isFinite(amount) || amount < 0) {
     return {
       ok: false,

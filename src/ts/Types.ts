@@ -1,3 +1,5 @@
+type QueryValue = string | string[] | undefined;
+
 type DiscountQuoteResult =
   | {
       ok: true;
@@ -10,4 +12,9 @@ type DiscountQuoteResult =
       error: string;
     };
 
-export default DiscountQuoteResult;
+type SharedTypes = {
+  QueryValue: QueryValue;
+  DiscountQuoteResult: DiscountQuoteResult;
+};
+
+export default SharedTypes;

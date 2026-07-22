@@ -1,9 +1,8 @@
 import calculateDiscountQuote from '@/services/discountQuoteService';
-import type DiscountQuoteRequest from '@/ts/DiscountQuoteRequest';
-import type DiscountQuoteResponse from '@/ts/DiscountQuoteResponse';
-import type QueryValue from '@/ts/QueryValue';
+import type SharedInterfaces from '@/ts/Interfaces';
+import type SharedTypes from '@/ts/Types';
 
-function firstQueryValue(value: QueryValue): string | undefined {
+function firstQueryValue(value: SharedTypes['QueryValue']): string | undefined {
   if (Array.isArray(value)) {
     return value[0];
   }
@@ -12,15 +11,19 @@ function firstQueryValue(value: QueryValue): string | undefined {
 }
 
 function sendJson(
-  res: DiscountQuoteResponse,
+  res: SharedInterfaces['DiscountQuoteResponse'],
   statusCode: number,
   body: Record<string, number | string | undefined>,
 ): void {
   res.statusCode = statusCode;
+  res.setHeader?.('Content-Type', 'application/json');
   res.end(JSON.stringify(body));
 }
 
-function discountQuoteController(req: DiscountQuoteRequest, res: DiscountQuoteResponse): void {
+function discountQuoteController(
+  req: SharedInterfaces['DiscountQuoteRequest'],
+  res: SharedInterfaces['DiscountQuoteResponse'],
+): void {
   const amountValue = firstQueryValue(req.query.amount);
 
   if (amountValue === undefined || amountValue.trim() === '') {
