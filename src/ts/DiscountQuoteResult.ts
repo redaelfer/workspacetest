@@ -1,6 +1,4 @@
-export type QueryValue = string | string[] | undefined;
-
-export type DiscountQuoteResult =
+type DiscountQuoteResult =
   | {
       ok: true;
       total: number;
@@ -11,3 +9,5 @@ export type DiscountQuoteResult =
       ok: false;
       error: string;
     };
+
+export default DiscountQuoteResult;

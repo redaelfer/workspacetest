@@ -1,4 +1,4 @@
-import type { DiscountQuoteResult } from '@/ts/Types';
+import type DiscountQuoteResult from '@/ts/DiscountQuoteResult';
 
 const trustedCoupons: Readonly<Record<string, number>> = Object.freeze({
   SUMMER10: 10,
