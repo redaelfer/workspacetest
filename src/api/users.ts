@@ -1,7 +1,8 @@
 import express from 'express';
 import type { NextFunction, Request, Response } from 'express';
-import { getUser, handleUserApiError, registerUser } from '../controllers/usersController';
+import usersController from '@/controllers/usersController';
 
+const { getUser, handleUserApiError, registerUser } = usersController;
 const router = express.Router();
 
 function asyncHandler(

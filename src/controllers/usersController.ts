@@ -1,13 +1,18 @@
 import type { NextFunction, Response } from 'express';
-import type { AuthenticatedRequest, AuthenticatedUser, CreateUserRequestBody } from '../types/users';
-import { HttpError } from '../types/users';
-import { createUser, getUserById, parseUserId } from '../services/usersService';
+import type Interfaces from '@/ts/Interfaces';
+import HttpError from '@/ts/HttpError';
+import usersService from '@/services/usersService';
 
-function currentUser(req: AuthenticatedRequest): AuthenticatedUser | undefined {
+function currentUser(
+  req: Interfaces['AuthenticatedRequest']
+): Interfaces['AuthenticatedUser'] | undefined {
   return req.user ?? req.auth?.user ?? req.session?.user;
 }
 
-function canReadUser(caller: AuthenticatedUser, requestedUserId: number): boolean {
+function canReadUser(
+  caller: Interfaces['AuthenticatedUser'],
+  requestedUserId: number
+): boolean {
   return (
     caller.id === requestedUserId ||
     caller.isAdmin === true ||
@@ -15,8 +20,11 @@ function canReadUser(caller: AuthenticatedUser, requestedUserId: number): boolea
   );
 }
 
-export async function getUser(req: AuthenticatedRequest, res: Response): Promise<Response> {
-  const userId = parseUserId(req.params.id);
+async function getUser(
+  req: Interfaces['AuthenticatedRequest'],
+  res: Response
+): Promise<Response> {
+  const userId = usersService.parseUserId(req.params.id);
   const caller = currentUser(req);
 
   if (!caller) {
@@ -27,21 +35,23 @@ export async function getUser(req: AuthenticatedRequest, res: Response): Promise
     throw new HttpError(403, 'Forbidden');
   }
 
-  const user = await getUserById(userId);
+  const user = await usersService.getUserById(userId);
   return res.json({ user });
 }
 
-export async function registerUser(
-  req: AuthenticatedRequest,
+async function registerUser(
+  req: Interfaces['AuthenticatedRequest'],
   res: Response
 ): Promise<Response> {
-  const user = await createUser(req.body as Partial<CreateUserRequestBody>);
+  const user = await usersService.createUser(
+    req.body as Partial<Interfaces['CreateUserRequestBody']>
+  );
   return res.status(201).json({ user });
 }
 
-export function handleUserApiError(
+function handleUserApiError(
   error: unknown,
-  _req: AuthenticatedRequest,
+  _req: Interfaces['AuthenticatedRequest'],
   res: Response,
   next: NextFunction
 ): Response | void {
@@ -51,3 +61,9 @@ export function handleUserApiError(
 
   return next(error);
 }
+
+export default {
+  getUser,
+  handleUserApiError,
+  registerUser,
+};
