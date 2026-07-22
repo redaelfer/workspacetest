@@ -1,18 +1,6 @@
-import calculateDiscountQuote from '../services/discountQuoteService';
-
-type QueryValue = string | string[] | undefined;
-
-type DiscountQuoteRequest = {
-  query: {
-    amount?: QueryValue;
-    coupon?: QueryValue;
-  };
-};
-
-type DiscountQuoteResponse = {
-  statusCode: number;
-  end: (body: string) => void;
-};
+import calculateDiscountQuote from '@/services/discountQuoteService';
+import type { DiscountQuoteRequest, DiscountQuoteResponse } from '@/ts/Interfaces';
+import type { QueryValue } from '@/ts/Types';
 
 function firstQueryValue(value: QueryValue): string | undefined {
   if (Array.isArray(value)) {

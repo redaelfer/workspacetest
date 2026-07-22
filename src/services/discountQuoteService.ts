@@ -1,20 +1,10 @@
+import type { DiscountQuoteResult } from '@/ts/Types';
+
 const trustedCoupons: Readonly<Record<string, number>> = Object.freeze({
   SUMMER10: 10,
   VIP25: 25,
   FREESHIP: 5,
 });
-
-type DiscountQuoteResult =
-  | {
-      ok: true;
-      total: number;
-      discountPercent: number;
-      couponCode?: string;
-    }
-  | {
-      ok: false;
-      error: string;
-    };
 
 const currencyPrecision = 100;
 

@@ -1,3 +1,3 @@
-import discountQuoteController from '../controllers/discountQuoteController';
+import discountQuoteController from '@/controllers/discountQuoteController';
 
 export default discountQuoteController;
