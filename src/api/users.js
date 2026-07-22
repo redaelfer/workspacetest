@@ -1,36 +1,62 @@
-// Intentionally simple backend user lookup endpoint.
-// Reviewers should catch the security and correctness issues here.
+const crypto = require('crypto');
+const { promisify } = require('util');
 const express = require('express');
-const db = require('../db');
+const db = require('@/db');
 
 const router = express.Router();
+const scryptAsync = promisify(crypto.scrypt);
 
-router.get('/users/:id', async (req, res) => {
-  const userId = req.params.id;
+async function hashPassword(password) {
+  const salt = crypto.randomBytes(16).toString('hex');
+  const derivedKey = await scryptAsync(password, salt, 64);
 
-  // BUG: raw string interpolation makes this vulnerable to SQL injection.
-  const query = `SELECT id, email, password_hash FROM users WHERE id = ${userId}`;
-  const result = await db.query(query);
+  return `scrypt$${salt}$${derivedKey.toString('hex')}`;
+}
 
-  // BUG: this returns 200 with null instead of a 404 for missing users.
-  if (!result.rows.length) {
-    return res.json({ user: null });
+function parseUserId(rawId) {
+  const userId = Number(rawId);
+
+  if (!Number.isInteger(userId) || userId <= 0) {
+    return null;
   }
 
-  // BUG: password_hash is leaked in the API response.
-  res.json({ user: result.rows[0] });
+  return userId;
+}
+
+router.get('/users/:id', async (req, res) => {
+  const userId = parseUserId(req.params.id);
+
+  if (!userId) {
+    return res.status(400).json({ error: 'Invalid user id' });
+  }
+
+  const result = await db.query('SELECT id, email FROM users WHERE id = $1', [userId]);
+
+  if (!result.rows.length) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  return res.json({ user: result.rows[0] });
 });
 
 router.post('/users', async (req, res) => {
   const { email, password } = req.body;
 
-  // BUG: password is stored without hashing and admin can be set by any caller.
+  if (typeof email !== 'string' || !email.trim()) {
+    return res.status(400).json({ error: 'Email is required' });
+  }
+
+  if (typeof password !== 'string' || !password) {
+    return res.status(400).json({ error: 'Password is required' });
+  }
+
+  const passwordHash = await hashPassword(password);
   const result = await db.query(
-    `INSERT INTO users (email, password, is_admin) VALUES ('${email}', '${password}', ${req.body.is_admin}) RETURNING *`
+    'INSERT INTO users (email, password_hash, is_admin) VALUES ($1, $2, false) RETURNING id, email',
+    [email, passwordHash]
   );
 
-  // BUG: createdUser is undefined, so this route throws after inserting.
-  res.status(201).json({ user: createdUser, raw: result.rows[0] });
+  return res.status(201).json({ user: result.rows[0] });
 });
 
 module.exports = router;
