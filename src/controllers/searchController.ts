@@ -1,19 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import searchUsers from '../services/userSearchService';
-
-type ErrorResponse = {
-  error: string;
-};
-
-type SearchUser = {
-  id: string;
-  name: string | null;
-  avatar_url: string | null;
-};
-
-type SearchResponse = {
-  users: SearchUser[];
-};
+import searchUsers from '@/services/userSearchService';
+import type { ErrorResponse, SearchResponse } from '@/ts/Types';
 
 function getBearerToken(req: NextApiRequest): string | null {
   const header = req.headers.authorization;

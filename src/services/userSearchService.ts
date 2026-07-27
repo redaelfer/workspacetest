@@ -1,13 +1,4 @@
-type SearchUsersInput = {
-  q: string;
-  accessToken: string;
-};
-
-type SearchUser = {
-  id: string;
-  name: string | null;
-  avatar_url: string | null;
-};
+import type { SearchUser, SearchUsersInput } from '@/ts/Types';
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;

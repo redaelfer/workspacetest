@@ -1,3 +1,3 @@
-import searchController from '../../src/controllers/searchController';
+import searchController from '@/controllers/searchController';
 
 export default searchController;
