@@ -1,0 +1,20 @@
+name: CI
+
+"on":
+  push: {}
+  pull_request: {}
+
+jobs:
+  validate:
+    name: Validate repository
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Verify expected files
+        run: |
+          test -f guide.md
+          test -f workspace.md
+          find . -maxdepth 2 -type f | sort
