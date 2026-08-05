@@ -18,3 +18,8 @@ jobs:
           test -f guide.md
           test -f workspace.md
           find . -maxdepth 2 -type f | sort
+
+      - name: Intentional CI failure for PR validation
+        run: |
+          echo "This workflow is expected to fail for CI validation."
+          exit 1
