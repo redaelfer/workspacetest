@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in to WorkspaceTest</title>
+</head>
+<body>
+  <header>
+    <nav aria-label="WorkspaceTest navigation">
+      <a href="/">WorkspaceTest</a>
+      <a href="/guide.md">Guide</a>
+      <a href="/workspace.md">Workspace notes</a>
+    </nav>
+  </header>
+
+  <main aria-labelledby="page-title">
+    <section aria-describedby="page-intro">
+      <p>WorkspaceTest access</p>
+      <h1 id="page-title">Welcome back</h1>
+      <p id="page-intro">
+        Review project guides, workspace notes, and team updates from one place.
+        This preview keeps sign-in safe until the application authentication flow
+        is available.
+      </p>
+    </section>
+
+    <section aria-labelledby="login-heading">
+      <h2 id="login-heading">Sign-in preview</h2>
+      <p>
+        Authentication is not implemented in this repository yet, so this static
+        page intentionally does not include email fields, password fields,
+        credential submission, token handling, external authentication calls, or
+        secrets.
+      </p>
+      <p>
+        When sign-in is added, build it through the approved application
+        component structure with React, shadcn/ui, and Tailwind, then connect it
+        to the server-side authentication flow.
+      </p>
+      <p>
+        <a href="/auth/sign-in" aria-describedby="auth-status">Continue to the sign-in flow</a>
+      </p>
+      <p>
+        <a href="/auth/forgot-password">Forgot your password?</a>
+      </p>
+      <p id="auth-status" role="status">
+        Sign-in routing is reserved for the future application auth flow; no
+        credentials are collected on this page.
+      </p>
+    </section>
+
+    <section aria-labelledby="expect-heading">
+      <h2 id="expect-heading">What to expect</h2>
+      <ul>
+        <li>Clear navigation back to the guide and workspace notes.</li>
+        <li>No inactive form controls that could capture credentials.</li>
+        <li>Auth links are placeholders for the future routed application flow.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
